@@ -1,0 +1,7 @@
+bits 2
+channels 2
+complex 1
+file /media/gnssLive/shortTest/glo.bin
+out /media/gnssLive/shortTest/gloL1.bin
+out /media/gnssLive/shortTest/gloL2.bin
+limit 1000000000000000
