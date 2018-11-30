@@ -1,4 +1,5 @@
 ## RF Data Unpacker 
+[![CircleCI](https://circleci.com/gh/christopherbate/RFDataUnpacker.svg?style=svg)](https://circleci.com/gh/christopherbate/RFDataUnpacker)
 
 # Build
 `make`
