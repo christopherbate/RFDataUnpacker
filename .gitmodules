@@ -1,0 +1,3 @@
+[submodule "QuickTestCPP"]
+	path = QuickTestCPP
+	url = git@github.com:christopherbate/QuickTestCPP.git
