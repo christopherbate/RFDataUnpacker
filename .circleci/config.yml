@@ -12,4 +12,4 @@ jobs:
           command: make
       - run:
           name: test
-          command: ./test
+          command: ./bin/test
