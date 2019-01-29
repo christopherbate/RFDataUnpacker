@@ -2,7 +2,7 @@
 #define UNPACKER_H
 
 #include <cstdint>
-#include <exception>
+#include <stdexcept>
 #include <vector>
 
 /**
