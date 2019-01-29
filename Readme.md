@@ -1,7 +1,13 @@
 ## RF Data Unpacker 
+[![CircleCI](https://circleci.com/gh/christopherbate/RFDataUnpacker.svg?style=svg)](https://circleci.com/gh/christopherbate/RFDataUnpacker)
+
+[![CircleCI](https://circleci.com/gh/christopherbate/RFDataUnpacker.svg?style=svg)](https://circleci.com/gh/christopherbate/RFDataUnpacker)
 
 # Build
-`make`
+`git submodule init && git submodule update --remote && make`
+
+# Test
+Normal `make` builds the tests. Run `./tests`. Automatically run by CircleCI on commit.
 
 # Run
 Fill out the information in settings.txt. Here's an example:
@@ -26,7 +32,7 @@ limit 1000000000000000
 This specification says "the data is packed in I/Q format, with 2 bits per each I and Q, and is alternating 2 different channels.". 
 
 Then run:
-`./unpakcer`
+`./unpacker`
 to extract.
 
 #TODO:
