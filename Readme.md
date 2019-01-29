@@ -1,6 +1,8 @@
 ## RF Data Unpacker 
 [![CircleCI](https://circleci.com/gh/christopherbate/RFDataUnpacker.svg?style=svg)](https://circleci.com/gh/christopherbate/RFDataUnpacker)
 
+[![CircleCI](https://circleci.com/gh/christopherbate/RFDataUnpacker.svg?style=svg)](https://circleci.com/gh/christopherbate/RFDataUnpacker)
+
 # Build
 `git submodule init && git submodule update --remote && make`
 
