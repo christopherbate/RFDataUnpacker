@@ -9,7 +9,7 @@ jobs:
       - run: git submodule update --remote
       - run:
           name: build
-          command: make
+          command: make clean && make
       - run:
           name: test
           command: ./bin/test
