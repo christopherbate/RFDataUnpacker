@@ -62,7 +62,7 @@ int main() {
         }
 
         //   Create unpacker.
-        Unpacker unpacker(map, channels, bits, true);
+        Unpacker<int8_t> unpacker(map, channels, bits, true);
 
         // Verify number of output files is correct.
         if (channelFilenames.size() != channels) {

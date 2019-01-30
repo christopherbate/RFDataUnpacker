@@ -7,81 +7,44 @@
 
 /**
  * Unpacker class
+ * The class accepts a template type which is the output type (signed int, int8_t, etc)
+ * It unpacks complex data as sequential I,Q,I,Q
  */
+template <typename T>
 class Unpacker {
   public:
     /**
-     * Init with parameters
+     * Constructor for alternate params.
+     * map - the mapping from source data (considering source data bits as 
+     *       an unsigned integer) to the correct integer mapping.
      */
     Unpacker(std::vector<int>& map, unsigned int numChannels,
-             unsigned int numBits, bool complex)
-        : m_map(map), m_numChannels(numChannels), m_numBits(numBits),
-          m_isComplex(complex) {
-        ResetIdicies();
-    }
-
+             unsigned int numBits, bool complex);
     /**
-     * Defaults
+     * Default constructor
      */
-    Unpacker() {
-        m_isComplex = true;
-        m_map = {1, 3, -3, -1};
-        m_numChannels = 2;
-        m_numBits = 2;
-        ResetIdicies();
-    }
+    Unpacker();
 
     void ResetIdicies() { m_componentIdx = m_channelIdx = 0; }
 
-    double GetChanSamplesPerByte() {
-        return ((double)(8 / m_numBits) / (double)(m_isComplex ? 2 : 1) /
-                (double)m_numChannels);
-    }
-
-    unsigned int GetOutputBufferSize(unsigned int inputSize) {
-        double chanSamplesPerByte = GetChanSamplesPerByte();
-        return (unsigned int)(inputSize)*chanSamplesPerByte *
-               (m_isComplex ? 2 : 1);
-    }
+    /**
+     * Returns how many samples per channel per byte 
+     * in the packed data according to current settings.
+     */
+    double GetChanSamplesPerByte();
+    
+    /**
+     * Returns how large an output buffer (per channel)
+     * is needed for the given input size.
+     * Return is "units of T"
+     */
+    unsigned int GetOutputBufferSize(unsigned int inputSize);
 
     /**
      * Unpack
      */
-    void Unpack(std::vector<uint8_t>& inputBuffer,
-                std::vector<std::vector<int8_t>>& outputBuffers) {
-        unsigned int outputIdx = 0;
-
-        // Verify output Size.
-        unsigned int outputSize = GetOutputBufferSize(inputBuffer.size());
-        for (auto iter = outputBuffers.begin(); iter != outputBuffers.end();
-             iter++) {
-            if (outputSize != (*iter).size()) {
-                throw std::runtime_error("Output buffer size incorrect.");
-            }
-        }
-
-        // Verify output Buffer is the correct size.
-        // For each bytes.
-        for (unsigned int i = 0; i < inputBuffer.size(); i++) {
-            unsigned char byte = inputBuffer[i];
-            for (unsigned int j = 0; j < 8 / m_numBits; j++) {
-                unsigned char point = (byte >> (m_numBits * j)) & 0x3;
-
-                int samplePoint = m_map[point];
-                outputBuffers[m_channelIdx][outputIdx + m_componentIdx] =
-                    (samplePoint);
-
-                if (m_isComplex) {
-                    m_componentIdx = (m_componentIdx + 1) % 2;
-                    if (m_componentIdx == 0) {
-                        m_channelIdx = (m_channelIdx + 1) % m_numChannels;
-                        if (m_channelIdx == 0)
-                            outputIdx = outputIdx + (m_isComplex ? 2 : 1);
-                    }
-                }
-            }
-        }
-    }
+    void Unpack(const std::vector<uint8_t>& inputBuffer,
+                std::vector<std::vector<T>>& outputBuffers);
 
   private:
     std::vector<int> m_map;

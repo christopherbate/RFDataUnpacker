@@ -4,13 +4,13 @@
 int main() {
     TestRunner::GetRunner()->AddTest("Unpacker", "Can instatiate unpacker",
                                      []() {
-                                         Unpacker unpacker;
+                                         Unpacker<int8_t> unpacker;
                                          return 1;
                                      });
 
     TestRunner::GetRunner()->AddTest(
         "Unpacker", "Can unpack two channels packed", []() {
-            Unpacker unpacker;
+            Unpacker<int8_t> unpacker;
 
             std::vector<std::vector<int8_t>> outputs;
             outputs.resize(2);
@@ -48,7 +48,7 @@ int main() {
 
     TestRunner::GetRunner()->AddTest(
         "Unpacker", "Correct output buffer size for 2chn 2bit IQ", []() {
-            Unpacker unpacker;
+            Unpacker<int8_t> unpacker;
 
             if (unpacker.GetChanSamplesPerByte() != 1.0) {
                 std::cerr << "Incorrect samples per byte"
@@ -66,7 +66,7 @@ int main() {
     TestRunner::GetRunner()->AddTest(
         "Unpacker", "Correct output buffer size for 4chn 2bit IQ", []() {
             std::vector<int> map = {1, 3, -3, -1};
-            Unpacker unpacker(map, 4, 2, true);
+            Unpacker<int8_t> unpacker(map, 4, 2, true);
 
             if (unpacker.GetChanSamplesPerByte() != 0.5) {
                 return 0;
@@ -82,7 +82,7 @@ int main() {
     TestRunner::GetRunner()->AddTest(
         "Unpacker", "Correct output buffer size for 1chn 2bit IQ", []() {
             std::vector<int> map = {1, 3, -3, -1};
-            Unpacker unpacker(map, 1, 2, true);
+            Unpacker<int8_t> unpacker(map, 1, 2, true);
 
             if (unpacker.GetChanSamplesPerByte() != 2) {
                 return 0;
