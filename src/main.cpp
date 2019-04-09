@@ -1,4 +1,5 @@
 #include "Unpacker.hpp"
+#include "json.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -6,11 +7,13 @@
 
 using namespace std;
 
-int main() {
+using json = nlohmann::json;
+
+int main(int argc, char** argv) {
     // Default mapping.
-    std::vector<int> map = {1, 3, -3, -1};
+    std::vector<int> map = {-1, 1, -3, 3};
     bool complex = true;
-    unsigned int channels = 2;
+    unsigned int channels = 1;
     unsigned int bits = 2;
     string file = "";
 
@@ -19,40 +22,30 @@ int main() {
     vector<vector<int8_t>> outputBuffers;
     const unsigned int bufferSize = 1024000;
 
+    if (argc < 2) {
+        cout << "Usage: unpacker [name of input json file with all settings]"
+             << std::endl;
+        return 0;
+    }
+
     try {
         // Process the settings file.
         std::ifstream infile;
-        infile.open("settings.txt", ifstream::in);
-        while (!infile.eof()) {
-            string key;
-            string value;
-            string value2;
-            infile >> key;
-            if (key == "bits") {
-                infile >> value;
-                bits = stoul(value);
-            }
-            if (key == "channels") {
-                infile >> value;
-                channels = stoul(value);
-            }
-            if (key == "map") {
-                infile >> value;
-                infile >> value2;
-            }
-            if (key == "file") {
-                infile >> file;
-                cout << "Input: " << file << std::endl;
-            }
-            if (key == "out") {
-                infile >> value;
-                channelFilenames.push_back(value);
-                std::cout << "Added " << value << " for output " << std::endl;
-            }
+        infile.open(argv[1], ifstream::in);
+        json settings;
+        infile >> settings;
+        bits = settings["bits"];
+        channels = settings["channels"];
+        file = settings["file"];
+        for (auto iter = settings["out"].begin(); iter != settings["out"].end();
+             iter++) {
+            cout << "Output file: " << *iter << endl;
+            channelFilenames.push_back(*iter);
         }
         infile.close();
 
         // Debug: Display results;
+        std::cout << "Input file: " << file << endl;
         std::cout << "Channels " << channels << endl
                   << "Bits " << bits << endl
                   << "Complex " << complex << endl;
