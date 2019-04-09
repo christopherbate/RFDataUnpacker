@@ -1,0 +1,6 @@
+{
+    "bits": 8,
+    "channels": 1,
+    "file":"/media/chris/linux_data/workspace/localize-web/tests/test-data/if_sige.data",
+    "out": ["./sige_unpacked.bin"]
+}
