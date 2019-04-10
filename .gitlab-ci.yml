@@ -1,0 +1,17 @@
+stages:
+  - build
+
+build:
+  image: "gcc:latest"
+  tags: 
+    - intel-nuc2
+  stage: build
+  script: 
+    - git submodule init 
+    - git submodule update --remote
+    - make clean && make -j 2
+    - ./bin/test
+  artifacts: 
+    expire_in: 1 day
+    paths:
+      - bin/*
