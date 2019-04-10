@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     vector<string> channelFilenames;
     vector<ofstream> outFiles;
     vector<vector<int8_t>> outputBuffers;
-    const unsigned int bufferSize = 1024000;
+    const unsigned int bufferSize = 1024;
 
     if (argc < 2) {
         cout << "Usage: unpacker [name of input json file with all settings]"
@@ -29,7 +29,9 @@ int main(int argc, char** argv) {
     }
 
     try {
-        // Process the settings file.
+        /**
+         * Process the settings file by importing the settings file into JSON.
+         */
         std::ifstream infile;
         infile.open(argv[1], ifstream::in);
         json settings;
@@ -39,8 +41,15 @@ int main(int argc, char** argv) {
         file = settings["file"];
         for (auto iter = settings["out"].begin(); iter != settings["out"].end();
              iter++) {
-            cout << "Output file: " << *iter << endl;
             channelFilenames.push_back(*iter);
+        }
+        if (settings.find("mapping") != settings.end()) {
+            cout << "Using user specified mapping." << endl;
+            map.clear();
+            for (auto iter = settings["mapping"].begin();
+                 iter != settings["mapping"].end(); iter++) {
+                map.push_back(*iter);
+            }
         }
         infile.close();
 
@@ -92,7 +101,7 @@ int main(int argc, char** argv) {
 
         // Perform unpacking
         unsigned int total = 0;
-        unsigned int lastPrint = 0;
+        float lastPrint = 0;
         infile.seekg(0, std::ios_base::end);
         unsigned int fileSize = infile.tellg();
         infile.seekg(0, std::ios_base::beg);
@@ -112,11 +121,11 @@ int main(int argc, char** argv) {
                 index++;
             }
             // Percentage
-            if (total - lastPrint > 1000000000) {
-                std::cout << total << " bytes processed, "
-                          << (double)total / (double)fileSize
+            float percentage = (float)total / (float)fileSize;
+            if ((percentage - lastPrint) >= 0.10 || percentage >= 0.98) {
+                std::cout << total << " bytes processed, " << percentage * 100
                           << " percent complete." << std::endl;
-                lastPrint = total;
+                lastPrint = percentage;
             }
         }
 
